@@ -1,0 +1,58 @@
+const SHEET_ID = '1wKLS2A5GW1tlzHg21rvklRwMWXH-XFZXmHvJzhqfcV8';
+const QUESTIONS_SHEET = 'Questions';
+const RESULTS_SHEET = 'Results';
+const DEFAULT_QUESTIONS = [[1, "חומרה", "קל", "מהי המטרה של זיכרון RAM במחשב?", "אחסון קבוע של קבצים גם כשהמחשב כבוי", "אחסון זמני ומהיר של מידע בזמן עבודה", "שמירת הגדרות BIOS בלבד", "החלפת המעבד בזמן עומס", 2, 1], [2, "חומרה", "קל", "איזה רכיב אחראי על תהליך האתחול הראשוני לפני עליית מערכת ההפעלה?", "RAM", "ROM / BIOS", "Diskette", "Hard disk", 2, 1], [3, "חומרה", "קל", "מה משפיע לרוב בצורה המשמעותית ביותר על מהירות העיבוד של המחשב?", "נפח דיסק פנוי", "ספק כוח 400W", "מהירות המעבד CPU", "מהירות CD/DVD", 3, 1], [4, "חומרה", "בינוני", "מהם שני חיבורי המדפסות הנפוצים ביותר מהרשימה?", "Serial Port ו-RJ11", "PS/2 ו-RJ11", "LPT Port ו-USB", "PS/2 ו-USB", 3, 1], [5, "חומרה", "קל", "באיזו פקודה תשתמש לבדיקת תקינות דיסק קשיח?", "sfc /scannow", "CHKDSK /F", "fdisk", "loadfix C:\\MOUSE\\MOUSE.COM", 2, 1], [6, "רשתות", "קל", "מהי כתובת IP ומה תפקידה?", "מזהה ייחודי של מחשב או התקן ברשת", "כתובת דואר אלקטרוני של המשתמש", "שם מערכת ההפעלה בלבד", "סוג של כבל רשת", 1, 1], [7, "רשתות", "קל", "מהו DNS?", "שירות שמצפין אתרים", "שירות שממיר שמות דומיין לכתובות IP", "שרת שמחלק כתובות IP אוטומטית", "שירות גיבוי קבצים", 2, 1], [8, "רשתות", "קל", "על מה אחראי DHCP?", "הצפנת גלישה באינטרנט", "חלוקת כתובות IP בצורה אוטומטית למכשירים ברשת", "אחסון קבצים משותפים", "ניהול הרשאות ליומן Outlook", 2, 1], [9, "רשתות", "בינוני", "PING לשם השרת לא עונה, אבל PING לכתובת ה-IP של השרת כן עונה. מה סביר שהבעיה?", "כבל רשת תקול", "בעיית DNS", "חוסר מקום בדיסק", "סוללת BIOS חלשה", 2, 1], [10, "אופיס", "קל", "ב-Word, איך ניתן לעצב את כל הכותרות בפורמט אחיד?", "לעצב כל כותרת ידנית", "להשתמש בסגנונות (Styles)", "להוסיף מספור בכל פסקה", "להשתמש בתפריט הדפסה", 2, 1], [11, "אופיס", "קל", "ב-Excel, איך ניתן להדגיש תאים לפי תנאי מסוים?", "Pivot Table", "תבנית טקסט", "עיצוב מותנה", "הדפסת גיליון", 3, 1], [12, "אופיס", "בינוני", "משתמש מדווח שרק מייל אחד תקוע ב-Outbox ושאר המיילים עובדים. מה סביר לבדוק קודם?", "האם צורף קובץ גדול מדי", "האם המחשב במצב טיסה", "האם צריך לפרמט את המחשב", "האם צריך להחליף מסך", 1, 1], [13, "Troubleshooting", "בינוני", "משתמש מתלונן שהמחשב איטי. מה הגישה הנכונה ביותר?", "להפעיל מחדש בלבד ולסגור את הקריאה", "לבדוק מה בדיוק איטי, Task Manager, עומסי CPU/RAM ודיסק", "להחליף מחשב מיד", "להתקין Office מחדש", 2, 1], [14, "Troubleshooting", "בינוני", "משתמש מקבל הודעה No Domain Controller Found. מה נכון לבדוק קודם?", "להוציא ולהכניס לדומיין מיד", "לבדוק כבל רשת/חיבור רשת והגדרות IP/DNS", "למחוק את פרופיל המשתמש", "להחליף מקלדת", 2, 1], [15, "אבטחת מידע", "קל", "מה חשוב לוודא בעת איפוס סיסמה למשתמש?", "שהמשתמש נשמע לחוץ", "אימות זהות לפי נוהל ארגוני", "שהמשתמש זוכר את הסיסמה הישנה", "ששם המחשב מתחיל באות A", 2, 1], [16, "שירות לקוחות", "קל", "משתמש מתוסכל פונה אליך בכעס עם תקלה חמורה. איך נכון להגיב?", "להישאר רגוע, להקשיב, להרגיע ולהציע פתרון ראשוני", "להגיד לו להמתין עד שתתפנה", "לבקש ממנו לא לפנות שוב עד שיהיה פתרון", "לנתק את השיחה", 1, 1], [17, "Windows", "בינוני", "מחשב מקבל כתובת 169.254.x.x. מה המשמעות הסבירה?", "DHCP תקין", "אין קבלת כתובת משרת DHCP", "DNS עובד מהר מדי", "המשתמש נעול ב-AD", 2, 1], [18, "Windows", "בינוני", "לאחר Login מופיע מסך שחור. מה כדאי לבדוק מוקדם?", "האם explorer.exe רץ דרך Task Manager", "להחליף ספק כוח מיד", "להתקין מדפסת מחדש", "למחוק את כל הקבצים", 1, 1], [19, "Active Directory", "בינוני", "משתמש ננעל כל כמה דקות. מה סיבה נפוצה?", "סיסמה ישנה שמורה בטלפון/Outlook/שירות אחר", "מסך לא תקין", "חוסר מקום בסל המחזור", "כבל HDMI תקול", 1, 1], [20, "Active Directory", "קל", "מה תפקיד Group Policy בארגון?", "ניהול מרכזי של הגדרות והרשאות תחנות/משתמשים", "בדיקת מהירות דיסק בלבד", "החלפת אנטי וירוס", "שמירת קבצי PST", 1, 1], [21, "Microsoft 365", "בינוני", "לאחר איפוס סיסמה משתמש לא מצליח להתחבר ל-365. מה חשוב לבדוק?", "MFA / שיטות אימות", "צבע האייקון של Teams", "סוג העכבר", "רזולוציית המסך", 1, 1], [22, "Networking", "קל", "מהו הפורט הסטנדרטי של HTTPS?", "21", "25", "80", "443", 4, 1], [23, "Networking", "קל", "מה תפקיד Default Gateway?", "יציאה מרשת מקומית לרשתות אחרות", "שמירת סיסמאות", "ניהול מדפסות בלבד", "המרת קבצי Word", 1, 1], [24, "Office", "בינוני", "מהו קובץ OST ב-Outlook?", "עותק מקומי מסונכרן של תיבת הדואר", "קובץ BIOS", "קובץ התקנה של Windows", "טבלת Excel", 1, 1], [25, "Helpdesk", "קל", "מה חשוב לעשות לפני סגירת קריאה?", "לוודא מול המשתמש שהתקלה נפתרה ולתעד פתרון", "לסגור מיד כדי לשפר SLA", "למחוק את היסטוריית הקריאה", "להעביר למחלקה אחרת בלי סיבה", 1, 1]];
+
+function doGet(e) {
+  setup();
+  const action = e.parameter.action || '';
+  const callback = e.parameter.callback || 'callback';
+  if (action === 'questions') {
+    const data = getQuestions_();
+    return ContentService.createTextOutput(callback + '(' + JSON.stringify(data) + ')')
+      .setMimeType(ContentService.MimeType.JAVASCRIPT);
+  }
+  return ContentService.createTextOutput('OK');
+}
+
+function doPost(e) {
+  setup();
+  const ss = SpreadsheetApp.openById(SHEET_ID);
+  const sh = ss.getSheetByName(RESULTS_SHEET);
+  const data = JSON.parse(e.postData.contents || '{}');
+  sh.appendRow([
+    new Date(), data.candidateName || '', data.phone || '', data.email || '', data.position || '',
+    data.score || 0, data.correct || 0, data.total || 0, data.durationSeconds || 0,
+    data.endedByTime || '', JSON.stringify(data.categoryScores || {}), JSON.stringify(data.answers || [])
+  ]);
+  return ContentService.createTextOutput(JSON.stringify({ok:true})).setMimeType(ContentService.MimeType.JSON);
+}
+
+function setup() {
+  const ss = SpreadsheetApp.openById(SHEET_ID);
+  let q = ss.getSheetByName(QUESTIONS_SHEET) || ss.insertSheet(QUESTIONS_SHEET);
+  let r = ss.getSheetByName(RESULTS_SHEET) || ss.insertSheet(RESULTS_SHEET);
+  if (q.getLastRow() === 0) {
+    q.appendRow(['ID','Category','Difficulty','Question','Answer1','Answer2','Answer3','Answer4','Correct','Active']);
+    q.getRange(2,1,DEFAULT_QUESTIONS.length,DEFAULT_QUESTIONS[0].length).setValues(DEFAULT_QUESTIONS);
+  }
+  if (r.getLastRow() === 0) {
+    r.appendRow(['Timestamp','Candidate Name','Phone','Email','Position','Score','Correct','Total','Duration Seconds','Ended By Time','Category Scores','Full Answers']);
+  }
+}
+
+function getQuestions_() {
+  const ss = SpreadsheetApp.openById(SHEET_ID);
+  const sh = ss.getSheetByName(QUESTIONS_SHEET);
+  const values = sh.getDataRange().getValues();
+  const out = [];
+  for (let i = 1; i < values.length; i++) {
+    const row = values[i];
+    if (String(row[9]).toLowerCase() === '0' || String(row[9]).toLowerCase() === 'false') continue;
+    out.push({
+      id: row[0], category: row[1], difficulty: row[2], text: row[3],
+      answers: [row[4], row[5], row[6], row[7]], correct: Number(row[8]) - 1
+    });
+  }
+  return out;
+}
