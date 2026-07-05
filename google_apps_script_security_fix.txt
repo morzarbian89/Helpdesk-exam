@@ -1,0 +1,80 @@
+const SHEET_ID = '1wKLS2A5GW1tlzHg21rvklRwMWXH-XFZXmHvJzhqfcV8';
+const QUESTION_SHEET = 'Questions';
+const RESULTS_SHEET = 'Results';
+const ANSWERS_SHEET = 'Answers';
+const RESULT_HEADERS = ['Timestamp','Candidate Name','Position','Score','Correct','Total','Duration','Rating','Focus Loss Count','Warning Count','Suspicious Events','Hardware','Windows','Networking','Active Directory','Microsoft 365','Outlook','Office','Security','Troubleshooting','Printers','Mobile','Customer Service'];
+const ANSWER_HEADERS = ['Timestamp','Candidate Name','Question #','Category','Topic','Difficulty','Question','Selected Answer','Correct Answer','Is Correct'];
+const CATEGORIES = ['Hardware','Windows','Networking','Active Directory','Microsoft 365','Outlook','Office','Security','Troubleshooting','Printers','Mobile','Customer Service'];
+function doGet(e){
+  const action = e && e.parameter && e.parameter.action;
+  const callback = e && e.parameter && e.parameter.callback;
+  if(action === 'questions'){
+    const data = getQuestions_();
+    const json = JSON.stringify(data);
+    if(callback){ return ContentService.createTextOutput(callback + '(' + json + ');').setMimeType(ContentService.MimeType.JAVASCRIPT); }
+    return ContentService.createTextOutput(json).setMimeType(ContentService.MimeType.JSON);
+  }
+  return ContentService.createTextOutput('OK');
+}
+function doPost(e){
+  try{
+    const payload = JSON.parse(e.postData.contents || '{}');
+    saveResult_(payload);
+    return ContentService.createTextOutput(JSON.stringify({ok:true})).setMimeType(ContentService.MimeType.JSON);
+  }catch(err){
+    return ContentService.createTextOutput(JSON.stringify({ok:false,error:String(err)})).setMimeType(ContentService.MimeType.JSON);
+  }
+}
+function getQuestions_(){
+  const ss = SpreadsheetApp.openById(SHEET_ID);
+  const sh = ss.getSheetByName(QUESTION_SHEET);
+  if(!sh) return [];
+  const values = sh.getDataRange().getValues();
+  if(values.length < 2) return [];
+  const rows = values.slice(1).filter(r => r.join('').trim() !== '');
+  return rows.map((r,i) => ({
+    ID: r[0] || i+1,
+    Category: r[1] || '',
+    Topic: r[2] || '',
+    Difficulty: r[3] || '',
+    Question: r[4] || '',
+    Answer1: r[5] || '',
+    Answer2: r[6] || '',
+    Answer3: r[7] || '',
+    Answer4: r[8] || '',
+    Correct: r[9] || 1,
+    Active: r[10] || 'כן'
+  })).filter(q => String(q.Active || 'כן').trim() !== 'לא' && String(q.Question || '').trim() !== '');
+}
+function saveResult_(p){
+  const ss = SpreadsheetApp.openById(SHEET_ID);
+  const results = getOrCreateSheet_(ss, RESULTS_SHEET, RESULT_HEADERS);
+  const answers = getOrCreateSheet_(ss, ANSWERS_SHEET, ANSWER_HEADERS);
+  const ts = new Date();
+  const rating = getRating_(Number(p.score || 0));
+  const row = [ts,p.candidateName || '',p.position || 'Helpdesk',p.score || 0,p.correct || 0,p.total || 0,formatDuration_(p.durationSeconds || 0),rating,p.focusLossCount || 0,p.warningCount || 0,JSON.stringify(p.suspiciousEvents || [])];
+  CATEGORIES.forEach(cat => row.push((p.categoryScores && p.categoryScores[cat]) ? p.categoryScores[cat] : ''));
+  results.appendRow(row);
+  const detailRows = (p.answers || []).map(a => [ts,p.candidateName || '',a.number || '',a.category || '',a.topic || '',a.difficulty || '',a.question || '',a.selected || '',a.correctAnswer || '',a.isCorrect || '']);
+  if(detailRows.length){ answers.getRange(answers.getLastRow()+1,1,detailRows.length,ANSWER_HEADERS.length).setValues(detailRows); }
+}
+function getOrCreateSheet_(ss,name,headers){
+  let sh = ss.getSheetByName(name);
+  if(!sh) sh = ss.insertSheet(name);
+  if(sh.getLastRow() === 0){ sh.appendRow(headers); }
+  else { sh.getRange(1,1,1,headers.length).setValues([headers]); }
+  sh.getRange(1,1,1,headers.length).setFontWeight('bold').setBackground('#1565C0').setFontColor('#FFFFFF');
+  sh.setFrozenRows(1);
+  return sh;
+}
+function getRating_(score){
+  if(score >= 90) return 'מומלץ מאוד';
+  if(score >= 80) return 'מומלץ';
+  if(score >= 70) return 'לשיקול';
+  return 'לא מומלץ';
+}
+function formatDuration_(sec){
+  sec = Number(sec || 0);
+  const m = Math.floor(sec/60), s = sec%60;
+  return m + ':' + String(s).padStart(2,'0');
+}
